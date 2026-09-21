@@ -1,0 +1,18 @@
+{
+  "name": "Nishal Interiors by Nishita",
+  "short_name": "Nishal Interiors",
+  "description": "Residential interior design studio in Mumbai.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBF8F1",
+  "theme_color": "#FBF8F1",
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

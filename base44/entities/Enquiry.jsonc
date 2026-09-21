@@ -1,0 +1,49 @@
+{
+  "name": "Enquiry",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email"
+    },
+    "area": {
+      "type": "string",
+      "title": "Area in Mumbai"
+    },
+    "property_type": {
+      "type": "string",
+      "title": "Property type"
+    },
+    "size": {
+      "type": "string",
+      "title": "Approximate size"
+    },
+    "scope": {
+      "type": "string",
+      "title": "Scope of work"
+    },
+    "timeline": {
+      "type": "string",
+      "title": "Timeline"
+    },
+    "message": {
+      "type": "string",
+      "title": "Message"
+    },
+    "consent": {
+      "type": "boolean",
+      "title": "Consent to Privacy Policy"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
