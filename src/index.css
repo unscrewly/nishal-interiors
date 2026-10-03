@@ -1,5 +1,7 @@
 /* Self-hosted fonts via fontsource (font-display: swap) */
 @import "@fontsource/cormorant-garamond/300.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/600.css";
 @import "@fontsource/hanken-grotesk/400.css";
 @import "@fontsource/hanken-grotesk/500.css";
 @import "@fontsource/instrument-serif/400.css";
@@ -11,13 +13,14 @@
 @layer base {
   :root {
     /* Studio palette */
-    --ivory: #FBF8F1;
+    --ivory: #F6F0E7;
     --ink: #2A2622;
+    --espresso: #1C1512;
     --walnut: #3B2F28;
     --sand: #EDE5D8;
     --taupe: #6B6055;
     --taupe-light: #8C7F72;
-    --brass: #9C8158;
+    --brass: #B88A4A;
     --hairline: rgba(42, 38, 34, 0.18);
 
     /* shadcn compatibility tokens (kept for platform components) */
@@ -77,6 +80,28 @@
   ::selection {
     background-color: var(--sand);
     color: var(--ink);
+  }
+
+  /* Clear keyboard focus for every interactive element */
+  :focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 3px;
+  }
+
+  /* On-brand scrollbar */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #c9bca9 var(--ivory);
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--ivory);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c9bca9;
+    border: 3px solid var(--ivory);
   }
 }
 
@@ -159,7 +184,8 @@
     transform-origin: left;
     transition: transform 200ms ease;
   }
-  .nav-link:hover::after {
+  .nav-link:hover::after,
+  .nav-link.is-active::after {
     transform: scaleX(1);
   }
   /* Solid CTA button — the confident, filled conversion element */
@@ -201,33 +227,133 @@
     opacity: 0.6;
     cursor: default;
   }
-  /* Placeholder photo block */
-  .photo-placeholder {
-    background-color: var(--sand);
-    background-image: linear-gradient(
-      135deg,
-      rgba(42, 38, 34, 0.03) 0%,
-      rgba(42, 38, 34, 0.06) 100%
-    );
-    position: relative;
-    overflow: hidden;
+  /* One shared type scale for display headings */
+  .h1-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.25rem, 5vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
   }
-  .photo-placeholder::after {
-    content: attr(data-label);
-    position: absolute;
-    inset: 0;
-    display: flex;
+  /* Large section display headline */
+  .display-md {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.5rem, 5.5vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+  }
+  .h2-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+    line-height: 1.15;
+  }
+  .h3-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    line-height: 1.15;
+  }
+  /* One italic brass word inside a headline */
+  .accent-italic {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--brass);
+  }
+  /* Oversized outlined numerals for services and process steps */
+  .numeral-outline {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--brass);
+  }
+  /* Brass primary CTA */
+  .btn-brass {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 1.5rem;
+    gap: 0.5rem;
     font-family: var(--font-body);
-    font-size: 0.6875rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--taupe-light);
-    line-height: 1.6;
+    text-decoration: none;
+    min-height: 48px;
+    padding: 1rem 2rem;
+    background-color: var(--brass);
+    color: var(--espresso);
+    border: 1px solid var(--brass);
+    transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
+    cursor: pointer;
+  }
+  .btn-brass:hover {
+    background-color: var(--ivory);
+    border-color: var(--ivory);
+    color: var(--espresso);
+  }
+  .btn-brass:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  /* Outlined secondary CTA on dark sections */
+  .btn-outline-light {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    min-height: 48px;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    color: var(--ivory);
+    border: 1px solid rgba(246, 240, 231, 0.5);
+    transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
+  }
+  .btn-outline-light:hover {
+    background-color: var(--ivory);
+    border-color: var(--ivory);
+    color: var(--espresso);
+  }
+  /* Outlined secondary CTA on light sections */
+  .btn-outline-dark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    min-height: 48px;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    color: var(--espresso);
+    border: 1px solid var(--espresso);
+    transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
+  }
+  .btn-outline-dark:hover {
+    background-color: var(--espresso);
+    border-color: var(--espresso);
+    color: var(--ivory);
+  }
+  /* Layout system: capped content width + section rhythm */
+  .container-x {
+    width: 100%;
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-inline: 5vw;
+  }
+  .section-pad {
+    padding-block: clamp(72px, 10vw, 160px);
   }
 }
 
@@ -235,8 +361,9 @@
   /* Scroll reveal: gentle fade + 12px rise, 300ms ease-out */
   .reveal {
     opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 300ms ease-out, transform 300ms ease-out;
+    transform: translateY(24px);
+    transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .reveal.is-visible {
     opacity: 1;
@@ -271,6 +398,22 @@
   .page-enter {
     animation: pagein 300ms ease-out both;
   }
+  /* Backdrop fade for modal overlays */
+  @keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .fade-in {
+    animation: fadein 300ms ease-out both;
+  }
+  /* Marquee strip: slow continuous scroll over duplicated content */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    animation: marquee 45s linear infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -296,7 +439,9 @@
     transition: none;
   }
   .kenburns,
-  .page-enter {
+  .page-enter,
+  .fade-in,
+  .marquee-track {
     animation: none;
   }
 }

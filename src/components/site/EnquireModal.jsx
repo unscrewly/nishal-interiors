@@ -70,7 +70,7 @@ export default function EnquireModal() {
         type="button"
         aria-label="Close enquiry popup"
         onClick={() => setOpen(false)}
-        className="absolute inset-0 bg-ink/50"
+        className="fade-in absolute inset-0 bg-ink/50"
       />
       <div
         role="dialog"
@@ -119,7 +119,8 @@ export default function EnquireModal() {
                 <input
                   name="name"
                   required
-                  className="w-full bg-transparent border-b border-hairline py-3 outline-none focus:border-brass transition-colors text-ink"
+                  placeholder="Your name"
+                  className="w-full bg-transparent border-b border-hairline py-3 outline-none focus:border-brass transition-colors text-ink placeholder:text-taupe-light"
                 />
               </label>
               <label className="block">
@@ -128,7 +129,8 @@ export default function EnquireModal() {
                   name="phone"
                   type="tel"
                   required
-                  className="w-full bg-transparent border-b border-hairline py-3 outline-none focus:border-brass transition-colors text-ink"
+                  placeholder="10-digit mobile number"
+                  className="w-full bg-transparent border-b border-hairline py-3 outline-none focus:border-brass transition-colors text-ink placeholder:text-taupe-light"
                 />
               </label>
               <label className="block">
@@ -136,12 +138,13 @@ export default function EnquireModal() {
                 <input
                   name="email"
                   type="email"
-                  className="w-full bg-transparent border-b border-hairline py-3 outline-none focus:border-brass transition-colors text-ink"
+                  placeholder="you@example.com"
+                  className="w-full bg-transparent border-b border-hairline py-3 outline-none focus:border-brass transition-colors text-ink placeholder:text-taupe-light"
                 />
               </label>
               {error && <p className="text-taupe text-sm">{error}</p>}
-              <button type="submit" disabled={sending} className="btn-solid w-full">
-                {sending ? "Sending…" : "Enquire Now"}
+              <button type="submit" disabled={sending} className="btn-brass w-full">
+                {sending ? "Sending…" : "Book a Free Consultation"}
               </button>
             </form>
 

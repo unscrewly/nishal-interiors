@@ -15,14 +15,7 @@ export default function PageHero({ label, title, intro, breadcrumbs, children })
       )}
       <Reveal>
         {label && <p className="label mb-4">{label}</p>}
-        <h1
-          className="font-display text-ink max-w-4xl"
-          style={{
-            fontSize: "clamp(2.25rem, 5vw, 4.5rem)",
-            lineHeight: 1.02,
-            letterSpacing: "-0.01em",
-          }}
-        >
+        <h1 className="font-display h1-display text-ink max-w-4xl">
           {title}
         </h1>
         {intro && (

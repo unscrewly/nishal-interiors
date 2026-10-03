@@ -88,8 +88,8 @@ export default function ContactForm() {
       {status === "error" && (
         <p role="alert" className="text-ink border-l-2 border-brass pl-3 mb-6">
           We could not send that just now. Please email us at{" "}
-          <a href="mailto:hello@nishalinteriors.com" className="underline decoration-hairline underline-offset-4">
-            hello@nishalinteriors.com
+          <a href="mailto:nishalinteriors@gmail.com" className="underline decoration-hairline underline-offset-4">
+            nishalinteriors@gmail.com
           </a>{" "}
           or reach us on Instagram while we fix it.
         </p>
@@ -110,20 +110,20 @@ export default function ContactForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
         <div>
           <label htmlFor="cf-name" className={LABEL}>Name</label>
-          <input id="cf-name" type="text" required value={form.name} onChange={set("name")} className={FIELD} />
+          <input id="cf-name" type="text" required placeholder="Your full name" value={form.name} onChange={set("name")} className={FIELD} />
           {errors.name && <p className="text-ink text-sm mt-2">{errors.name}</p>}
         </div>
         <div>
           <label htmlFor="cf-area" className={LABEL}>Area in Mumbai</label>
-          <input id="cf-area" type="text" value={form.area} onChange={set("area")} className={FIELD} />
+          <input id="cf-area" type="text" placeholder="For example, Bandra or Powai" value={form.area} onChange={set("area")} className={FIELD} />
         </div>
         <div>
           <label htmlFor="cf-phone" className={LABEL}>Phone</label>
-          <input id="cf-phone" type="tel" value={form.phone} onChange={set("phone")} className={FIELD} />
+          <input id="cf-phone" type="tel" placeholder="10-digit mobile number" value={form.phone} onChange={set("phone")} className={FIELD} />
         </div>
         <div>
           <label htmlFor="cf-email" className={LABEL}>Email</label>
-          <input id="cf-email" type="email" value={form.email} onChange={set("email")} className={FIELD} />
+          <input id="cf-email" type="email" placeholder="you@example.com" value={form.email} onChange={set("email")} className={FIELD} />
           {(errors.contact || errors.email) && (
             <p className="text-ink text-sm mt-2">{errors.contact || errors.email}</p>
           )}
@@ -194,14 +194,10 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="text-link text-ink mt-8 disabled:opacity-50"
+        className="btn-solid mt-8"
       >
-        {status === "sending" ? "Sending" : "Send enquiry"}
-        <span className="arrow" />
+        {status === "sending" ? "Sending…" : "Send Enquiry"}
       </button>
-      <p className="label mt-6 max-w-md">
-        Prefer the form we already use? {"{{NEED: Google Form link}}"}
-      </p>
     </form>
   );
 }

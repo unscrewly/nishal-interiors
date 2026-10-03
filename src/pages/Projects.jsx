@@ -28,10 +28,7 @@ export default function Projects() {
         {groups.map((group) => (
           <div key={group} className="mt-16 first:mt-0">
             <Reveal>
-              <h2
-                className="font-display text-ink mb-10"
-                style={{ fontSize: "clamp(1.75rem, 3vw, 2.75rem)", lineHeight: 1.1 }}
-              >
+              <h2 className="font-display h2-display text-ink mb-10">
                 {group}
               </h2>
             </Reveal>
@@ -74,7 +71,7 @@ export default function Projects() {
       <section className="bg-walnut text-ivory px-[5vw] py-16">
         <Reveal>
           <p className="label text-ivory/70 mb-4">Start a project</p>
-          <p className="font-display text-ivory max-w-2xl" style={{ fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)", lineHeight: 1.15 }}>
+          <p className="font-display h2-display text-ivory max-w-2xl">
             Your home has its own problem worth solving. Tell us what it is.
           </p>
           <Link to="/contact/" className="text-link text-ivory mt-8">

@@ -28,9 +28,9 @@ export default function Areas() {
             visits, and we will say plainly what that means for your schedule.
           </p>
           <p className="text-taupe leading-relaxed mt-6 max-w-3xl">
-            The specific areas we publish pages for: {"{{NEED: list of areas Nishita actually serves}}"}
-            . We only publish area pages for places we genuinely work in, with
-            real projects and real notes on local housing.
+            We only publish area pages for places we genuinely work in, with
+            real projects and real notes on local housing. If you would like to
+            know whether we cover your area, ask us directly.
           </p>
         </Reveal>
 

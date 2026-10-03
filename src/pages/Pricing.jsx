@@ -42,7 +42,7 @@ export default function Pricing() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
           {STEPS.map((s) => (
             <Reveal key={s.h}>
-              <h2 className="font-display text-ink text-2xl mb-3">{s.h}</h2>
+              <h2 className="font-display h3-display text-ink mb-3">{s.h}</h2>
               <p className="text-taupe leading-relaxed">{s.p}</p>
             </Reveal>
           ))}
@@ -51,9 +51,9 @@ export default function Pricing() {
         <Reveal className="mt-14 border-t border-hairline pt-10">
           <p className="label mb-3">Our fee structure</p>
           <p className="text-ink leading-relaxed max-w-3xl">
-            Our fee structure is {"{{NEED: Nishita's pricing model, for example a design fee plus execution, or a percentage of project cost}}"}
-            . Once the scope is frozen, the numbers in the estimate are the numbers
-            we stand behind.
+            We explain our fee structure in person, once we have walked the home
+            and agreed the scope together. Once the scope is frozen, the numbers
+            in the estimate are the numbers we stand behind.
           </p>
           <p className="text-taupe leading-relaxed mt-4 max-w-3xl">
             Changes after the design is frozen are quoted separately, in writing,

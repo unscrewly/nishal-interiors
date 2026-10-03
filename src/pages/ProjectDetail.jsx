@@ -119,7 +119,7 @@ export default function ProjectDetail() {
 
       <section className="bg-sand px-[5vw] py-16">
         <Reveal>
-          <h2 className="font-display text-ink max-w-3xl mb-6" style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.15 }}>
+          <h2 className="font-display h2-display text-ink max-w-3xl mb-6">
             What changed
           </h2>
           <p className="text-ink leading-relaxed max-w-3xl">{project.whatChanged}</p>

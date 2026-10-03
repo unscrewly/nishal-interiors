@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import Menu from "./Menu";
 
-/* Desktop navigation links (lg and up). On smaller screens the same
-   destinations live inside the full-screen menu. */
 const NAV = [
   { label: "Studio", to: "/studio/" },
   { label: "Services", to: "/services/" },
@@ -16,32 +14,36 @@ const NAV = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Over the home hero the header sits on a dark photo scrim, so it reads
+  // ivory while transparent. Inner pages start on a light ground, so they
+  // read ink. Once scrolled, every page gets the solid espresso blur bar.
+  const tone = scrolled || isHome ? "text-ivory" : "text-ink";
+  const bar = scrolled
+    ? "bg-espresso/90 backdrop-blur-md [box-shadow:0_8px_30px_rgba(28,21,18,0.25)]"
+    : "bg-transparent";
+
   return (
     <>
-      <header
-        className={`fixed top-0 inset-x-0 z-40 transition-colors duration-300 ${
-          scrolled
-            ? "bg-ivory border-b border-hairline"
-            : "bg-transparent border-b border-transparent"
-        }`}
-      >
+      <header className={`fixed top-0 inset-x-0 z-40 transition-all duration-300 ${bar}`}>
         <div className="relative flex items-center justify-between px-[5vw] h-16 md:h-20">
-          {/* Mobile / tablet: hamburger on the left, brand centred, Enquire right */}
+          {/* Below xl: hamburger left, brand centred, brass CTA right */}
           <button
             type="button"
             aria-expanded={menuOpen}
             aria-controls="site-menu"
             aria-label="Open menu"
             onClick={() => setMenuOpen(true)}
-            className="label text-ink min-h-[48px] flex items-center gap-2 lg:hidden"
+            className={`label min-h-[48px] flex items-center gap-2 xl:hidden ${tone} hover:text-brass transition-colors`}
           >
             <span className="flex flex-col gap-[5px]" aria-hidden="true">
               <span className="block w-6 h-px bg-current" />
@@ -51,38 +53,36 @@ export default function Header() {
             <span className="hidden sm:inline">Menu</span>
           </button>
 
-          {/* Brand: centred on small screens, left-aligned on desktop */}
           <Link
             to="/"
-            className="font-display text-ink leading-none hover:text-brass transition-colors absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
+            className={`font-display leading-none hover:text-brass transition-colors absolute left-1/2 -translate-x-1/2 xl:static xl:translate-x-0 ${tone}`}
             style={{ fontSize: "clamp(1.25rem, 2.5vw, 2rem)" }}
           >
             Nishal Interiors
           </Link>
 
-          {/* Desktop nav with draw-in underline hovers */}
-          <nav aria-label="Primary" className="hidden lg:flex items-center gap-7">
+          {/* From xl up: full nav; the current page keeps its underline drawn */}
+          <nav aria-label="Primary" className="hidden xl:flex items-center gap-6">
             {NAV.map((l) => (
-              <Link
+              <NavLink
                 key={l.to}
                 to={l.to}
-                className="nav-link text-ink min-h-[48px] flex items-center"
+                className={({ isActive }) =>
+                  `nav-link min-h-[48px] flex items-center ${tone} ${isActive ? "is-active" : ""}`
+                }
               >
                 {l.label}
-              </Link>
+              </NavLink>
             ))}
           </nav>
 
-          {/* Conversion: Enquire always reachable, top right on every screen */}
+          {/* Brass CTA, stronger than the nav */}
           <div className="flex items-center">
-            <Link
-              to="/contact/"
-              className="label text-ink min-h-[48px] flex items-center hover:text-brass transition-colors lg:hidden"
-            >
-              Enquire
+            <Link to="/contact/" className="btn-brass hidden sm:inline-flex">
+              Book a Free Consultation
             </Link>
-            <Link to="/contact/" className="btn-solid hidden lg:inline-flex">
-              Enquire
+            <Link to="/contact/" className="btn-brass sm:hidden px-3">
+              Book
             </Link>
           </div>
         </div>

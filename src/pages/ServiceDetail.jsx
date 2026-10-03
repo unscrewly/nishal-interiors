@@ -67,7 +67,7 @@ export default function ServiceDetail({ slug }) {
       <section className="bg-sand px-[5vw] py-16">
         <div className="max-w-5xl">
           <Reveal>
-            <h2 className="font-display text-ink mb-8" style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}>
+            <h2 className="font-display h2-display text-ink mb-8">
               What this service covers
             </h2>
           </Reveal>

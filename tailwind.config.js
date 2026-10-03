@@ -11,13 +11,14 @@ module.exports = {
   			sm: '0rem'
   		},
   		colors: {
-  			ivory: '#FBF8F1',
+  			ivory: '#F6F0E7',
+  			espresso: '#1C1512',
   			ink: '#2A2622',
   			walnut: '#3B2F28',
   			sand: '#EDE5D8',
   			taupe: '#6B6055',
   			'taupe-light': '#8C7F72',
-  			brass: '#9C8158',
+  			brass: '#B88A4A',
   			hairline: 'rgba(42,38,34,0.18)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

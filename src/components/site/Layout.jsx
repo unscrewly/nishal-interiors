@@ -2,7 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import EnquireModal from "./EnquireModal";
-import FloatingEnquire from "./FloatingEnquire";
+import StickyContact from "./StickyContact";
 
 export default function Layout() {
   // Keying main by pathname plays a soft fade-up whenever the route changes.
@@ -20,7 +20,7 @@ export default function Layout() {
       <main id="main" key={pathname} className="page-enter">
         <Outlet />
       </main>
-      <FloatingEnquire />
+      <StickyContact />
       <Footer />
       {/* Homepage enquiry popup — shows once per session, after a short delay */}
       <EnquireModal />

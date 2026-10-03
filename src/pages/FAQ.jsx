@@ -38,6 +38,16 @@ const FAQS = [
   },
 ];
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
 export default function FAQ() {
   return (
     <>
@@ -45,6 +55,7 @@ export default function FAQ() {
         title="Frequently Asked Questions | Nishal Interiors"
         description="Answers to the questions clients ask most: areas we serve, scope, 3D designs, turnkey execution, timelines and how quotes are built."
         path="/faq/"
+        jsonLd={faqJsonLd}
       />
 
       <PageHero

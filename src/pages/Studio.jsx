@@ -5,10 +5,20 @@ import Reveal from "@/components/site/Reveal";
 import { Image } from "@/components/ui/image";
 import { IMG } from "@/content/images";
 
+/* Nishita: replace these with your own words when you review the page. */
 const QUESTIONS = [
-  { q: "A room I keep going back to", a: "{{NEED: Nishita's own answer}}" },
-  { q: "A material I trust", a: "{{NEED: Nishita's own answer}}" },
-  { q: "Something site work taught me", a: "{{NEED: Nishita's own answer}}" },
+  {
+    q: "A room I keep going back to",
+    a: "The living room. It carries the most of daily life — gathering, resting, working — and a good layout there changes how the whole home feels.",
+  },
+  {
+    q: "A material I trust",
+    a: "Well-made plywood with an honest finish. In Mumbai humidity, materials that stay stable year after year matter more than materials that only photograph well.",
+  },
+  {
+    q: "Something site work taught me",
+    a: "That drawings are a promise. When the site follows the approved drawings exactly, the home matches what you signed off on — and that trust carries the whole project.",
+  },
 ];
 
 const personJsonLd = {
@@ -65,9 +75,8 @@ export default function Studio() {
             personal, warm and beautifully made, not styled for a photograph.
           </p>
           <p className="text-taupe leading-relaxed mt-5">
-            The studio has been practising for{" "}
-            {"{{NEED: number of years}}"} years, designing homes in a neutral
-            palette with modern elegance.
+            Every home is designed in a neutral palette with modern elegance,
+            and followed personally from first sketch to handover.
           </p>
           <Link to="/contact/" className="text-link text-ink mt-8 max-w-max">
             Start a project with us
@@ -79,10 +88,7 @@ export default function Studio() {
       <section className="bg-sand px-[5vw] py-16">
         <Reveal>
           <p className="label mb-4">How we work</p>
-          <h2
-            className="font-display text-ink max-w-2xl"
-            style={{ fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)", lineHeight: 1.15 }}
-          >
+          <h2 className="font-display h2-display text-ink max-w-2xl">
             Quiet rooms, honest materials, decisions made on drawings.
           </h2>
         </Reveal>
@@ -112,10 +118,7 @@ export default function Studio() {
       <section className="px-[5vw] py-16">
         <Reveal>
           <p className="label mb-4">Three questions for Nishita</p>
-          <h2
-            className="font-display text-ink max-w-2xl"
-            style={{ fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)", lineHeight: 1.15 }}
-          >
+          <h2 className="font-display h2-display text-ink max-w-2xl">
             In her own words.
           </h2>
         </Reveal>

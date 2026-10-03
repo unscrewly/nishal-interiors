@@ -63,7 +63,7 @@ export default function Process() {
           {STAGES.map((stage) => (
             <Reveal as="li" key={stage.n} className="border-b border-hairline py-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
               <p className="label md:col-span-1">{stage.n}</p>
-              <h2 className="font-display text-ink md:col-span-4" style={{ fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)", lineHeight: 1.1 }}>
+              <h2 className="font-display h3-display text-ink md:col-span-4">
                 {stage.name}
               </h2>
               <div className="md:col-span-4">
@@ -82,7 +82,7 @@ export default function Process() {
       <section className="bg-walnut text-ivory px-[5vw] py-16">
         <Reveal>
           <p className="label text-ivory/70 mb-4">Start a project</p>
-          <p className="font-display text-ivory max-w-2xl" style={{ fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)", lineHeight: 1.15 }}>
+          <p className="font-display h2-display text-ivory max-w-2xl">
             Stage one is a conversation. It costs you an hour and it changes the project.
           </p>
           <Link to="/contact/" className="text-link text-ivory mt-8">

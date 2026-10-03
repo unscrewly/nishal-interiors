@@ -70,10 +70,7 @@ export default function JournalArticle() {
 
         <Reveal className="max-w-3xl">
           <p className="label mb-4">Journal</p>
-          <h1
-            className="font-display text-ink"
-            style={{ fontSize: "clamp(2rem, 4.5vw, 3.75rem)", lineHeight: 1.05, letterSpacing: "-0.01em" }}
-          >
+          <h1 className="font-display h1-display text-ink">
             {article.title}
           </h1>
           <p className="text-taupe mt-6 leading-relaxed">{article.description}</p>
@@ -87,7 +84,7 @@ export default function JournalArticle() {
         <div className="max-w-3xl mt-12">
           {article.body.map((block, i) =>
             block.type === "h2" ? (
-              <Reveal as="h2" key={i} className="font-display text-ink text-3xl mt-10 mb-4">
+              <Reveal as="h2" key={i} className="font-display h3-display text-ink mt-10 mb-4">
                 {block.text}
               </Reveal>
             ) : (

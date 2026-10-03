@@ -27,7 +27,7 @@ export default function Breadcrumbs({ items }) {
       />
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <li>
-          <Link to="/" className="label hover:text-brass transition-colors">
+          <Link to="/" className="label hover:text-brass transition-colors inline-block py-2">
             Home
           </Link>
         </li>
@@ -37,11 +37,11 @@ export default function Breadcrumbs({ items }) {
               /
             </span>
             {i === items.length - 1 ? (
-              <span aria-current="page" className="label text-ink">
+              <span aria-current="page" className="label text-ink py-2 inline-block">
                 {item.label}
               </span>
             ) : (
-              <Link to={item.to} className="label hover:text-brass transition-colors">
+              <Link to={item.to} className="label hover:text-brass transition-colors inline-block py-2">
                 {item.label}
               </Link>
             )}

@@ -48,7 +48,7 @@ export default function Services() {
                   }`}
                 >
                   <p className="label mb-3">{s.label}</p>
-                  <h2 className="font-display text-ink mb-4" style={{ fontSize: "clamp(1.75rem, 3vw, 2.75rem)", lineHeight: 1.1 }}>
+                  <h2 className="font-display h2-display text-ink mb-4">
                     {s.title}
                   </h2>
                   <p className="text-taupe leading-relaxed max-w-lg">{s.intro[0]}</p>
@@ -66,7 +66,7 @@ export default function Services() {
       <section className="bg-walnut text-ivory px-[5vw] py-16">
         <Reveal>
           <p className="label text-ivory/70 mb-4">Start a project</p>
-          <p className="font-display text-ivory max-w-2xl" style={{ fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)", lineHeight: 1.15 }}>
+          <p className="font-display h2-display text-ivory max-w-2xl">
             Not sure which service fits? Tell us about the home and we will say
             plainly what it needs.
           </p>
