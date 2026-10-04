@@ -1,7 +1,12 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import SEO from "@/components/site/SEO";
 import Reveal from "@/components/site/Reveal";
+import ImageReveal from "@/components/site/ImageReveal";
+import Parallax from "@/components/site/Parallax";
+import Magnetic from "@/components/site/Magnetic";
+import WhatsAppPill from "@/components/site/WhatsAppPill";
 import CountUp from "@/components/site/CountUp";
 import BeforeAfter from "@/components/site/BeforeAfter";
 import QuickEnquiryForm from "@/components/site/QuickEnquiryForm";
@@ -66,13 +71,6 @@ const TESTIMONIALS = [
 // TODO: confirm real material and hardware partners
 const PARTNERS = ["Hettich", "Häfele", "Century Ply", "Greenlam", "Asian Paints", "Kajaria"];
 
-const PROOF = [
-  { value: STUDIO_FACTS.homesDelivered, suffix: "+", decimals: 0, label: "Homes delivered" },
-  { value: STUDIO_FACTS.yearsOfPractice, suffix: "", decimals: 0, label: "Years of practice" },
-  { value: STUDIO_FACTS.avgDeliveryWeeks, suffix: "", decimals: 0, label: "Weeks, avg. delivery" },
-  { value: Number(STUDIO_FACTS.clientRating), suffix: "", decimals: 1, label: "Client rating" },
-];
-
 const MARQUEE_ITEMS = [
   "Residential Interiors",
   "Modular Kitchens",
@@ -121,6 +119,7 @@ const FEATURED = {
   area: "Powai", // TODO: real area
   size: "2 BHK, ~640 sq ft", // TODO: real size
   duration: "16 weeks", // TODO: real duration
+  year: "2024", // TODO: real completion year
 };
 
 const GRID_PROJECTS = [
@@ -129,12 +128,14 @@ const GRID_PROJECTS = [
     area: "Bandra West", // TODO: real area
     size: "Kitchen, ~90 sq ft", // TODO: real size
     duration: "8 weeks", // TODO: real duration
+    year: "2024", // TODO: real completion year
   },
   {
     ...PROJECTS[2],
     area: "Andheri West", // TODO: real area
     size: "1 BHK, ~420 sq ft", // TODO: real size
     duration: "12 weeks", // TODO: real duration
+    year: "2025", // TODO: real completion year
   },
 ];
 
@@ -260,28 +261,64 @@ function MarqueeRow({ ariaHidden }) {
   );
 }
 
-function TrustStrip() {
+/* Hero trust bar: hairline top border, four columns with big serif
+   numbers over small labels, divided by vertical hairlines. */
+function HeroTrustBar() {
   const items = [
-    `${STUDIO_FACTS.homesDelivered}+ homes delivered`,
-    `${STUDIO_FACTS.yearsOfPractice} years of practice`,
-    `Rated ${STUDIO_FACTS.clientRating} on Google`,
-    `${STUDIO_FACTS.turnkeyDays}-day turnkey delivery`,
+    { value: STUDIO_FACTS.homesDelivered, suffix: "+", decimals: 0, label: "Homes delivered" },
+    { value: STUDIO_FACTS.yearsOfPractice, suffix: "", decimals: 0, label: "Years of practice" },
+    { value: Number(STUDIO_FACTS.clientRating), suffix: "", decimals: 1, label: "Client rating" },
+    { value: STUDIO_FACTS.turnkeyDays, suffix: "", decimals: 0, label: "Day turnkey delivery" },
+  ];
+  const borders = [
+    "",
+    "border-l border-ivory/15",
+    "border-t border-ivory/15 md:border-t-0 md:border-l md:border-ivory/15",
+    "border-l border-t border-ivory/15 md:border-t-0",
   ];
   return (
-    <p className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-10 label text-ivory/75 hero-shadow">
-      {items.map((item, i) => (
-        <span key={item} className="flex items-center gap-4">
-          {i > 0 && (
-            <span className="w-1.5 h-1.5 rotate-45 bg-brass" aria-hidden="true" />
-          )}
-          <span>{item}</span>
-        </span>
-      ))}
-    </p>
+    <div
+      className="hero-fade relative z-10 border-t border-ivory/25 bg-espresso/40 backdrop-blur-md"
+      style={{ animationDelay: "850ms" }}
+    >
+      <div className="grid grid-cols-2 md:grid-cols-4">
+        {items.map((it, i) => (
+          <div key={it.label} className={`py-5 px-4 md:px-8 ${borders[i]}`}>
+            <p className="font-display text-3xl md:text-4xl text-ivory" style={{ lineHeight: 1 }}>
+              <CountUp value={it.value} decimals={it.decimals} />
+              {it.suffix && <span className="text-brass">{it.suffix}</span>}
+            </p>
+            <p className="label text-ivory/60 mt-2">{it.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
 export default function Home() {
+  /* Hero parallax: the photo drifts ~40px slower than the scroll. */
+  const heroImgRef = useRef(null);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const y = Math.min(window.scrollY * 0.12, 80);
+        if (heroImgRef.current) {
+          heroImgRef.current.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
+        }
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
     <>
       <SEO
@@ -291,112 +328,144 @@ export default function Home() {
         image={IMG.heroLiving.url}
         jsonLd={[homeJsonLd, websiteJsonLd]}
       />
+      <WhatsAppPill url={WHATSAPP_URL} />
 
-      {/* SECTION: Hero — outcome headline over a slow-zooming photo, dark
-          left-to-right scrim so the type never fights the image, brass CTA,
-          trust strip. */}
-      <section className="relative h-screen min-h-[640px] overflow-hidden bg-espresso">
-        <div className="absolute inset-0 kenburns">
-          <Image
-            src={IMG.heroLiving.url}
-            alt={IMG.heroLiving.alt}
-            fittingType="fill"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+      {/* SECTION: Hero — dominant editorial serif over a warm, slow-zooming
+          photo. Only the left 45% is darkened; the right stays at full
+          brightness. Content aligned to the site container. */}
+      <section className="relative h-screen min-h-[700px] overflow-hidden bg-espresso flex flex-col">
+        {/* Photo layer: scroll-lagged frame around a slow zoom */}
+        <div ref={heroImgRef} className="absolute inset-x-0 -top-24 bottom-0 will-change-transform">
+          <div className="absolute inset-0 kenburns">
+            <Image
+              src={IMG.heroLiving.url}
+              alt={IMG.heroLiving.alt}
+              fittingType="fill"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
         </div>
+        {/* Directional gradient: left 45% only + soft bottom rise */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(28,21,18,0.85) 0%, rgba(28,21,18,0.55) 45%, rgba(28,21,18,0.15) 100%)",
+              "linear-gradient(90deg, rgba(20,14,10,0.65) 0%, rgba(20,14,10,0.32) 28%, rgba(20,14,10,0) 45%)",
           }}
           aria-hidden="true"
         />
-        <div className="relative h-full flex flex-col justify-end">
-          <div className="container-x pb-[9vh]">
-            <Reveal>
-              <p className="label text-brass mb-5 hero-shadow">
-                Nishal Interiors by Nishita — Mumbai
-              </p>
-            </Reveal>
-            <Reveal delay={100}>
-              <h1 className="display-hero text-ivory max-w-[16ch] hero-shadow">
-                Mumbai homes, designed{" "}
-                <em className="accent-italic">and delivered</em> on time.
-              </h1>
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-ivory/85 text-lg leading-relaxed mt-6 max-w-xl hero-shadow">
-                Full-home interiors, modular kitchens and turnkey execution —
-                one team, one timeline, from first sketch to final handover.
-              </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <div className="flex flex-wrap gap-4 mt-8">
+        <div
+          className="absolute inset-x-0 bottom-0 h-2/5"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(20,14,10,0.55) 0%, rgba(20,14,10,0) 100%)",
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Coordinates detail, just under the transparent header */}
+        <div className="relative z-10 container-x pt-20 md:pt-24">
+          <p className="hero-fade label text-ivory/60 hero-shadow" style={{ animationDelay: "950ms" }}>
+            19.0760° N, 72.8777° E — Mumbai
+          </p>
+        </div>
+
+        <div className="relative z-10 flex-1 flex flex-col justify-end">
+          <div className="container-x pb-8 md:pb-10">
+            <p
+              className="hero-fade label text-brass mb-6 hero-shadow"
+              style={{ animationDelay: "150ms" }}
+            >
+              Nishal Interiors by Nishita — Mumbai
+            </p>
+            <h1
+              className="text-ivory hero-shadow max-w-none"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 500,
+                fontSize: "clamp(3.5rem, 7.5vw, 8rem)",
+                lineHeight: 0.95,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              <span className="line-mask">
+                <span className="hero-line" style={{ animationDelay: "0ms" }}>
+                  Mumbai homes,
+                </span>
+              </span>
+              <span className="line-mask">
+                <span className="hero-line" style={{ animationDelay: "120ms" }}>
+                  designed and
+                </span>
+              </span>
+              <span className="line-mask">
+                <span className="hero-line" style={{ animationDelay: "240ms" }}>
+                  <em className="accent-italic">delivered</em> on time.
+                </span>
+              </span>
+            </h1>
+            <p
+              className="hero-fade text-ivory/85 text-lg leading-relaxed mt-7 max-w-xl hero-shadow"
+              style={{ animationDelay: "500ms" }}
+            >
+              Full-home interiors, modular kitchens and turnkey execution —
+              one team, one timeline, from first sketch to final handover.
+            </p>
+            <div className="hero-fade flex flex-wrap gap-4 mt-9" style={{ animationDelay: "650ms" }}>
+              <Magnetic>
                 <Link to="/contact/" className="btn-brass">
                   Book a Free Design Consultation
                 </Link>
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-outline-light"
-                >
-                  Chat on WhatsApp
-                </a>
-              </div>
-              <p className="label text-ivory/60 mt-4">
-                Reply within 24 hours. No obligation.
-              </p>
-            </Reveal>
-            <Reveal delay={400}>
-              <TrustStrip />
-            </Reveal>
+              </Magnetic>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-outline-light"
+              >
+                Chat on WhatsApp
+              </a>
+            </div>
+            <p className="hero-fade label text-ivory/60 mt-4" style={{ animationDelay: "750ms" }}>
+              Reply within 24 hours. No obligation.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* SECTION: Proof bar — four big serif numbers, counted up once on scroll. */}
-      <section className="bg-ivory section-pad">
-        <div className="container-x">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12">
-            {PROOF.map((item, i) => (
-              <Reveal key={item.label} delay={i * 100}>
-                <p className="font-display font-medium text-espresso" style={{ fontSize: "clamp(3rem, 6vw, 5.5rem)", lineHeight: 1 }}>
-                  <CountUp value={item.value} decimals={item.decimals} />
-                  {item.suffix && (
-                    <span className="text-brass">{item.suffix}</span>
-                  )}
-                </p>
-                <p className="label mt-4">{item.label}</p>
-              </Reveal>
-            ))}
+          {/* Editorial details: scroll indicator left, image caption right */}
+          <div className="relative z-10 container-x pb-6 flex items-end justify-between gap-6">
+            <div className="hero-fade flex items-center gap-3" style={{ animationDelay: "900ms" }}>
+              <span className="scroll-line" aria-hidden="true" />
+              <span className="label text-ivory/60">Scroll</span>
+            </div>
+            <p
+              className="hero-fade label text-ivory/70 hero-shadow text-right"
+              style={{ animationDelay: "900ms" }}
+            >
+              Residential interior, Mumbai — 2024
+            </p>
           </div>
-          <Reveal className="mt-16 flex flex-col items-center text-center gap-3">
-            <Link to="/contact/" className="btn-brass">
-              Book a Free Consultation
-            </Link>
-            <p className="label text-taupe">Free. No obligation. Reply in 24 hrs.</p>
-          </Reveal>
         </div>
+
+        <HeroTrustBar />
       </section>
 
       {/* SECTION: Marquee — slow scrolling service strip. */}
-      <div className="bg-espresso border-y border-brass/30 overflow-hidden py-5" aria-hidden="true">
+      <div className="bg-espresso section-glow border-y border-brass/30 overflow-hidden py-5" aria-hidden="true">
         <div className="marquee-track flex w-max">
           <MarqueeRow ariaHidden={false} />
           <MarqueeRow ariaHidden />
         </div>
       </div>
 
-      {/* SECTION: Services — numbered rows; hovering a row fills it dark
-          with a brass arrow. */}
+      {/* SECTION: Services — numbered rows (01 / 05); hovering fills the
+          row from the left in brass-tinted espresso, arrow nudges, numeral
+          turns brass. */}
       <section className="bg-ivory section-pad">
         <div className="container-x">
           <Reveal>
             <p className="label mb-4">Services</p>
             <h2 className="display-md text-espresso max-w-3xl">
-              Five ways we make a home <em className="accent-italic">work beautifully</em>.
+              Five ways we make a home work <em className="accent-italic">beautifully</em>.
             </h2>
           </Reveal>
           <div className="mt-14 border-b border-hairline">
@@ -404,10 +473,15 @@ export default function Home() {
               <Reveal key={s.n} delay={i * 60}>
                 <Link
                   to={s.to}
-                  className="group grid grid-cols-[auto_1fr_auto] md:grid-cols-[120px_1fr_auto] items-center gap-6 md:gap-10 border-t border-hairline py-7 md:py-10 px-4 md:px-6 -mx-4 md:-mx-6 transition-colors duration-300 hover:bg-espresso"
+                  className="service-row group grid grid-cols-[auto_1fr_auto] md:grid-cols-[140px_1fr_auto] items-center gap-6 md:gap-10 border-t border-hairline py-7 md:py-10 px-4 md:px-6 -mx-4 md:-mx-6"
                 >
-                  <span className="numeral-outline text-4xl md:text-6xl" aria-hidden="true">
-                    {s.n}
+                  <span className="flex items-start gap-1.5">
+                    <span className="numeral-outline text-4xl md:text-6xl" aria-hidden="true">
+                      {s.n}
+                    </span>
+                    <span className="text-xs md:text-sm text-taupe-light mt-1 md:mt-2 transition-colors duration-300 group-hover:text-ivory/70">
+                      / 05
+                    </span>
                   </span>
                   <span className="min-w-0">
                     <span className="font-display text-2xl md:text-4xl text-espresso group-hover:text-ivory transition-colors duration-300 block">
@@ -418,7 +492,7 @@ export default function Home() {
                     </span>
                   </span>
                   <ArrowRight
-                    className="text-espresso group-hover:text-brass group-hover:translate-x-2 transition-all duration-300 shrink-0"
+                    className="text-espresso group-hover:text-brass group-hover:translate-x-1.5 transition-all duration-300 shrink-0"
                     size={28}
                     strokeWidth={1.25}
                   />
@@ -429,9 +503,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION: Featured projects — cinematic full-width case study plus a
-          two-up grid; hovering a card reveals its facts on a dark overlay. */}
-      <section className="bg-espresso section-pad text-ivory">
+      {/* SECTION: Featured work — No. 01 full-bleed case study, then an
+          asymmetric 7/5 grid: mixed aspect ratios, the second image drops
+          60px lower, both drift with a slow parallax. */}
+      <section className="bg-espresso section-glow section-pad-lg text-ivory">
         <div className="container-x">
           <Reveal>
             <p className="label text-brass mb-4">Featured work</p>
@@ -442,19 +517,21 @@ export default function Home() {
 
           <Reveal className="mt-14">
             <Link to={`/projects/${FEATURED.slug}/`} className="group block">
-              <div className="relative overflow-hidden aspect-[16/9] md:aspect-[21/9] img-hover">
-                <Image
-                  src={IMG[FEATURED.images[0].key].url}
-                  alt={IMG[FEATURED.images[0].key].alt}
-                  fittingType="fill"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+              <ImageReveal className="relative overflow-hidden aspect-[16/9] md:aspect-[21/9]">
+                <div className="img-hover absolute inset-0">
+                  <Image
+                    src={IMG[FEATURED.images[0].key].url}
+                    alt={IMG[FEATURED.images[0].key].alt}
+                    fittingType="fill"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </div>
                 <div
                   className="absolute inset-0 bg-gradient-to-t from-espresso/95 via-espresso/30 to-transparent"
                   aria-hidden="true"
                 />
                 <div className="absolute bottom-0 left-0 p-6 md:p-10">
-                  <p className="label text-brass mb-3">Featured project</p>
+                  <p className="label text-brass mb-3">No. 01 — Featured project</p>
                   <p className="font-display text-3xl md:text-5xl max-w-xl text-ivory" style={{ lineHeight: 1.02 }}>
                     {FEATURED.title}
                   </p>
@@ -469,38 +546,76 @@ export default function Home() {
                     <span className="arrow" />
                   </span>
                 </div>
-              </div>
+              </ImageReveal>
             </Link>
+            <p className="mt-4 font-display italic text-ivory/70">
+              Fig. 01 — Residential interior, {FEATURED.area}, {FEATURED.year}
+            </p>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-            {GRID_PROJECTS.map((p, i) => (
-              <Reveal key={p.slug} delay={i * 100}>
-                <Link to={`/projects/${p.slug}/`} className="group relative block aspect-[4/3] overflow-hidden">
-                  <div className="img-hover absolute inset-0">
-                    <Image
-                      src={IMG[p.images[0].key].url}
-                      alt={IMG[p.images[0].key].alt}
-                      fittingType="fill"
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-espresso/80 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 md:p-8">
-                    <p className="label text-brass mb-2">{p.group}</p>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mt-14">
+            <Reveal className="md:col-span-7">
+              <Link to={`/projects/${GRID_PROJECTS[0].slug}/`} className="group relative block aspect-[3/4] overflow-hidden">
+                <ImageReveal className="absolute inset-0">
+                  <Parallax speed={0.05} className="absolute -inset-y-12 inset-x-0">
+                    <div className="img-hover absolute inset-0">
+                      <Image
+                        src={IMG[GRID_PROJECTS[0].images[0].key].url}
+                        alt={IMG[GRID_PROJECTS[0].images[0].key].alt}
+                        fittingType="fill"
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
+                  </Parallax>
+                  <div className="absolute inset-0 z-10 bg-espresso/80 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-y-4 md:group-hover:translate-y-0 transition-all duration-500 flex flex-col justify-end p-6 md:p-8">
+                    <p className="label text-brass mb-2">No. 02 &middot; {GRID_PROJECTS[0].group}</p>
                     <p className="font-display text-2xl md:text-3xl text-ivory" style={{ lineHeight: 1.1 }}>
-                      {p.title}
+                      {GRID_PROJECTS[0].title}
                     </p>
                     <p className="label text-ivory/70 mt-3">
-                      {p.area} &bull; {p.size} &bull; {p.duration}
+                      {GRID_PROJECTS[0].area} &bull; {GRID_PROJECTS[0].size} &bull; {GRID_PROJECTS[0].duration}
                     </p>
-                    <p className="text-ivory/85 text-sm mt-2 max-w-md">{p.summary}</p>
+                    <p className="text-ivory/85 text-sm mt-2 max-w-md">{GRID_PROJECTS[0].summary}</p>
                   </div>
-                </Link>
-              </Reveal>
-            ))}
+                </ImageReveal>
+              </Link>
+              <p className="mt-4 font-display italic text-ivory/70">
+                Fig. 02 — {GRID_PROJECTS[0].group}, {GRID_PROJECTS[0].area}, {GRID_PROJECTS[0].year}
+              </p>
+            </Reveal>
+
+            <Reveal delay={100} className="md:col-span-5 md:translate-y-16">
+              <Link to={`/projects/${GRID_PROJECTS[1].slug}/`} className="group relative block aspect-[16/10] overflow-hidden">
+                <ImageReveal className="absolute inset-0">
+                  <Parallax speed={0.05} className="absolute -inset-y-12 inset-x-0">
+                    <div className="img-hover absolute inset-0">
+                      <Image
+                        src={IMG[GRID_PROJECTS[1].images[0].key].url}
+                        alt={IMG[GRID_PROJECTS[1].images[0].key].alt}
+                        fittingType="fill"
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
+                  </Parallax>
+                  <div className="absolute inset-0 z-10 bg-espresso/80 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-y-4 md:group-hover:translate-y-0 transition-all duration-500 flex flex-col justify-end p-6 md:p-8">
+                    <p className="label text-brass mb-2">No. 03 &middot; {GRID_PROJECTS[1].group}</p>
+                    <p className="font-display text-2xl md:text-3xl text-ivory" style={{ lineHeight: 1.1 }}>
+                      {GRID_PROJECTS[1].title}
+                    </p>
+                    <p className="label text-ivory/70 mt-3">
+                      {GRID_PROJECTS[1].area} &bull; {GRID_PROJECTS[1].size} &bull; {GRID_PROJECTS[1].duration}
+                    </p>
+                    <p className="text-ivory/85 text-sm mt-2 max-w-md">{GRID_PROJECTS[1].summary}</p>
+                  </div>
+                </ImageReveal>
+              </Link>
+              <p className="mt-4 font-display italic text-ivory/70">
+                Fig. 03 — {GRID_PROJECTS[1].group}, {GRID_PROJECTS[1].area}, {GRID_PROJECTS[1].year}
+              </p>
+            </Reveal>
           </div>
 
-          <Reveal className="mt-16 flex flex-col items-center text-center gap-3">
+          <Reveal className="mt-24 flex flex-col items-center text-center gap-3">
             <Link to="/contact/" className="btn-brass">
               Book a Free Consultation
             </Link>
@@ -517,40 +632,56 @@ export default function Home() {
             <h2 className="display-md text-espresso max-w-2xl">
               Slide to see what <em className="accent-italic">changed</em>.
             </h2>
-            <p className="text-taupe mt-5 max-w-2xl leading-relaxed">
+            <p className="text-taupe mt-5 max-w-[60ch] leading-relaxed">
               Same walls, different home. A nearly finished site becomes a
               finished living room — planned, executed and handed over by one
               team.
             </p>
           </Reveal>
           <Reveal className="mt-12">
-            <BeforeAfter before={BEFORE_AFTER.before} after={BEFORE_AFTER.after} />
+            <ImageReveal>
+              <BeforeAfter before={BEFORE_AFTER.before} after={BEFORE_AFTER.after} />
+            </ImageReveal>
+            <p className="mt-4 font-display italic text-taupe">
+              Fig. 04 — Living room, before and after, Mumbai
+            </p>
             {/* TODO: replace with real before/after photography of one project */}
           </Reveal>
         </div>
       </section>
 
-      {/* SECTION: Meet Nishita — portrait, founder note, signature, credentials. */}
-      <section className="bg-sand section-pad">
+      {/* SECTION: Meet Nishita — arched portrait with an offset brass
+          frame; the founder quote overlaps the image edge. */}
+      <section className="bg-sand section-pad-lg">
         <div className="container-x grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center">
           <Reveal className="md:col-span-5">
-            <div className="aspect-[4/5] img-hover">
-              <Image
-                src={IMG.designerHands.url}
-                alt={IMG.designerHands.alt}
-                fittingType="fill"
-                className="w-full h-full object-cover"
-              />
+            <div className="frame-offset md:pr-6">
+              <ImageReveal className="aspect-[3/4] rounded-t-full overflow-hidden">
+                <Image
+                  src={IMG.designerHands.url}
+                  alt={IMG.designerHands.alt}
+                  fittingType="fill"
+                  className="w-full h-full object-cover"
+                />
+              </ImageReveal>
             </div>
+            <p className="mt-6 font-display italic text-taupe">
+              Fig. 05 — Nishita, principal designer, Mumbai
+            </p>
             {/* TODO: replace with a real portrait of Nishita */}
           </Reveal>
           <div className="md:col-span-7">
             <Reveal>
               <p className="label mb-4">Meet the designer</p>
               <h2 className="display-md text-espresso">
-                The person behind <em className="accent-italic">every drawing</em>.
+                The person behind every <em className="accent-italic">drawing</em>.
               </h2>
-              <p className="font-display italic text-espresso text-2xl md:text-3xl leading-snug mt-8 max-w-xl">
+            </Reveal>
+            <Reveal
+              delay={120}
+              className="relative z-10 md:-ml-24 mt-10 bg-sand py-6 pr-4 md:pr-8 border-l border-brass/40"
+            >
+              <p className="font-display italic text-espresso text-2xl md:text-3xl leading-snug max-w-xl">
                 &ldquo;I design homes the way I would live in them: calm,
                 honest and built to last. You will see me on site, not just in
                 meetings.&rdquo;
@@ -559,7 +690,7 @@ export default function Home() {
                 Nishita
               </p>
             </Reveal>
-            <Reveal delay={120}>
+            <Reveal delay={200}>
               <ul className="mt-10 max-w-xl">
                 {[
                   "Designs and executes end to end — one accountable team",
@@ -581,9 +712,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION: Testimonials — large serif quotes on dark, with a Google
-          reviews badge. */}
-      <section className="bg-espresso section-pad text-ivory">
+      {/* SECTION: Testimonials — hanging-quote pull-quotes on warm espresso,
+          the middle column dropped lower to break symmetry. */}
+      <section className="bg-espresso section-glow section-pad text-ivory">
         <div className="container-x">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
             <Reveal>
@@ -605,10 +736,13 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 mt-14">
             {TESTIMONIALS.map((t, i) => (
-              <Reveal key={t.name} delay={i * 100}>
+              <Reveal key={t.name} delay={i * 100} className={i === 1 ? "md:translate-y-10" : ""}>
                 <figure>
+                  <span className="font-display text-6xl text-brass/60 leading-none block" aria-hidden="true">
+                    &ldquo;
+                  </span>
                   <blockquote className="font-display italic text-2xl md:text-[1.75rem] text-ivory leading-snug">
-                    &ldquo;{t.quote}&rdquo;
+                    {t.quote}&rdquo;
                   </blockquote>
                   <figcaption className="mt-6">
                     <p className="text-ivory font-medium">{t.name}</p>
@@ -621,7 +755,7 @@ export default function Home() {
             ))}
           </div>
           {/* TODO: all quotes above are placeholders — replace with real client feedback */}
-          <Reveal className="mt-16 flex flex-col items-center text-center gap-3">
+          <Reveal className="mt-20 flex flex-col items-center text-center gap-3">
             <Link to="/contact/" className="btn-brass">
               Book a Free Consultation
             </Link>
@@ -636,9 +770,9 @@ export default function Home() {
           <Reveal>
             <p className="label mb-4">Process</p>
             <h2 className="display-md text-espresso max-w-3xl">
-              From first sketch to <em className="accent-italic">final handover</em>.
+              From first sketch to final <em className="accent-italic">handover</em>.
             </h2>
-            <p className="text-taupe mt-5 max-w-2xl leading-relaxed">
+            <p className="text-taupe mt-5 max-w-[60ch] leading-relaxed">
               You see photorealistic 3D previews and approve every finish
               before any work begins — so nothing is decided twice.
             </p>
@@ -652,7 +786,7 @@ export default function Home() {
                   </span>
                   <div>
                     <p className="font-display text-xl md:text-2xl text-espresso">{step.name}</p>
-                    <p className="label mt-2 text-brass">{step.duration}</p>
+                    <p className="font-display italic text-brass mt-2">{step.duration}</p>
                   </div>
                   <p className="text-taupe leading-relaxed col-span-2 md:col-span-1 md:pt-1">
                     {step.line}
@@ -665,7 +799,7 @@ export default function Home() {
       </section>
 
       {/* SECTION: Promises — the four commitments, in writing. */}
-      <section className="bg-espresso section-pad text-ivory">
+      <section className="bg-espresso section-glow section-pad text-ivory">
         <div className="container-x">
           <Reveal>
             <p className="label text-brass mb-4">Our promises</p>
@@ -676,8 +810,8 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-14">
             {PROMISES.map((p, i) => (
               <Reveal key={p.n} delay={i * 80}>
-                <div className="border-t-2 border-brass pt-5">
-                  <p className="numeral-outline text-3xl" aria-hidden="true">{p.n}</p>
+                <div className="border-t border-brass/40 pt-5">
+                  <p className="font-display italic text-brass text-sm" aria-hidden="true">{p.n} / 04</p>
                   <p className="font-display text-2xl text-ivory mt-3">{p.title}</p>
                   <p className="text-ivory/75 leading-relaxed mt-3">{p.line}</p>
                 </div>
@@ -687,31 +821,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION: Pricing transparency teaser. */}
+      {/* SECTION: Pricing transparency — the one centred moment on the page. */}
       <section className="bg-ivory section-pad">
-        <div className="container-x flex flex-col md:flex-row md:items-center md:justify-between gap-10">
-          <Reveal>
-            <p className="label mb-4">Transparent pricing</p>
-            <p className="font-display text-espresso max-w-2xl" style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1 }}>
-              Interiors starting from{" "}
-              <span className="accent-italic">{STUDIO_FACTS.pricePerSqFt}</span> per sq ft.
-            </p>
-            <p className="text-taupe mt-5 max-w-xl leading-relaxed">
-              Typical full-home scope, itemised line by line. Every quote is
-              built from a site visit — no invented rates, no vague allowances.
-            </p>
-            {/* TODO: confirm the starting rate with Nishita */}
-          </Reveal>
-          <Reveal delay={100}>
-            <Link to="/pricing-and-how-we-charge/" className="btn-outline-dark max-w-max">
-              See how we charge
-            </Link>
-          </Reveal>
+        <div className="container-x">
+          <hr className="hairline-rule mb-14" />
+          <div className="text-center max-w-3xl mx-auto">
+            <Reveal>
+              <p className="label mb-4">Transparent pricing</p>
+              <p className="font-display text-espresso" style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.02, letterSpacing: "-0.02em" }}>
+                Interiors starting from <span className="accent-italic">{STUDIO_FACTS.pricePerSqFt}</span> per sq ft.
+              </p>
+              <p className="text-taupe mt-6 max-w-[52ch] mx-auto leading-relaxed">
+                Typical full-home scope, itemised line by line. Every quote is
+                built from a site visit — no invented rates, no vague allowances.
+              </p>
+              {/* TODO: confirm the starting rate with Nishita */}
+            </Reveal>
+            <Reveal delay={100}>
+              <Link to="/pricing-and-how-we-charge/" className="btn-outline-dark mt-10">
+                See how we charge
+              </Link>
+            </Reveal>
+          </div>
+          <hr className="hairline-rule mt-14" />
         </div>
       </section>
 
-      {/* SECTION: Materials & partners — muted wordmark row. */}
-      <section className="bg-sand py-16 md:py-20">
+      {/* SECTION: Materials & partners — muted serif wordmarks. */}
+      <section className="bg-sand py-16 md:py-24">
         <div className="container-x">
           <Reveal>
             <p className="label text-center mb-10">Materials &amp; partners we work with</p>
@@ -762,14 +899,14 @@ export default function Home() {
 
       {/* SECTION: Final CTA — split layout: headline and direct contacts left,
           short enquiry form right. */}
-      <section className="bg-espresso section-pad text-ivory">
+      <section className="bg-espresso section-glow section-pad text-ivory">
         <div className="container-x grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-20 items-start">
           <div>
             <Reveal>
               <p className="label text-brass mb-5">Start today</p>
               <h2
                 className="font-display font-medium text-ivory max-w-xl"
-                style={{ fontSize: "clamp(2.75rem, 5.5vw, 5.5rem)", lineHeight: 0.98, letterSpacing: "-0.01em" }}
+                style={{ fontSize: "clamp(2.75rem, 5.5vw, 5.5rem)", lineHeight: 0.98, letterSpacing: "-0.02em" }}
               >
                 Let&apos;s design the home you&apos;ve been{" "}
                 <em className="accent-italic">imagining</em>.

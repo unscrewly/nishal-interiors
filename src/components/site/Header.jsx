@@ -13,12 +13,17 @@ const NAV = [
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const { pathname } = useLocation();
   const isHome = pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(window.scrollY / max, 1) : 0);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -78,13 +83,22 @@ export default function Header() {
 
           {/* Brass CTA, stronger than the nav */}
           <div className="flex items-center">
-            <Link to="/contact/" className="btn-brass hidden sm:inline-flex">
+            <Link
+              to="/contact/"
+              className={`btn-brass hidden sm:inline-flex transition-transform duration-300 ${scrolled ? "scale-[0.96]" : "scale-100"}`}
+            >
               Book a Free Consultation
             </Link>
             <Link to="/contact/" className="btn-brass sm:hidden px-3">
               Book
             </Link>
           </div>
+          {/* Thin brass scroll-progress line under the bar */}
+          <div
+            className="absolute bottom-0 left-0 h-px bg-brass"
+            style={{ width: `${(progress * 100).toFixed(2)}%`, opacity: scrolled ? 1 : 0 }}
+            aria-hidden="true"
+          />
         </div>
       </header>
 

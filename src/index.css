@@ -285,7 +285,7 @@
     background-color: var(--brass);
     color: var(--espresso);
     border: 1px solid var(--brass);
-    transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
+    transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, transform 300ms ease;
     cursor: pointer;
   }
   .btn-brass:hover {
@@ -297,6 +297,26 @@
     opacity: 0.6;
     cursor: default;
   }
+  /* Fill wipes in from the left on hover (300ms) for every CTA */
+  .btn-brass, .btn-solid, .btn-outline-light, .btn-outline-dark {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-brass::before, .btn-solid::before, .btn-outline-light::before, .btn-outline-dark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms ease;
+    pointer-events: none;
+  }
+  .btn-brass:hover::before, .btn-solid:hover::before, .btn-outline-light:hover::before, .btn-outline-dark:hover::before {
+    transform: scaleX(1);
+  }
+  .btn-brass::before, .btn-outline-light::before { background-color: var(--ivory); }
+  .btn-solid::before { background-color: var(--ink); }
+  .btn-outline-dark::before { background-color: var(--espresso); }
   /* Outlined secondary CTA on dark sections */
   .btn-outline-light {
     display: inline-flex;
@@ -369,13 +389,143 @@
     opacity: 1;
     transform: translateY(0);
   }
-  /* Image hover: slow, subtle scale-up on project/panel imagery */
+  /* Image hover: slow zoom 1.00 → 1.04 over 700ms */
   .img-hover {
-    transition: transform 400ms ease;
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
   }
   .img-hover:hover {
     transform: scale(1.04);
+  }
+  /* ===== Art-direction pass ===== */
+  /* Film grain: fixed feTurbulence noise, 3.5% opacity, never interactive */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* Warm duotone: faint brass radial glow in one corner of espresso sections */
+  .section-glow {
+    background-image: radial-gradient(56rem circle at 85% 12%, rgba(184, 138, 74, 0.06), transparent 55%);
+  }
+  /* Hairline rules as section dividers */
+  .hairline-rule {
+    height: 1px;
+    border: 0;
+    background: rgba(42, 38, 34, 0.12);
+  }
+  .hairline-rule-light {
+    height: 1px;
+    border: 0;
+    background: rgba(246, 240, 231, 0.14);
+  }
+  /* Taller section rhythm */
+  .section-pad-lg {
+    padding-block: clamp(100px, 12vw, 180px);
+  }
+  /* Masked line reveal: text slides up from behind an overflow mask */
+  .reveal {
+    overflow: hidden;
+  }
+  .reveal-inner {
+    display: block;
+    transform: translateY(100%);
+    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.is-visible .reveal-inner {
+    transform: translateY(0);
+  }
+  /* Hero: staged entrance (lines, then copy, then bar) */
+  @keyframes rise-in {
+    from { transform: translateY(110%); }
+    to { transform: translateY(0); }
+  }
+  .hero-line {
+    display: block;
+    animation: rise-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+  .hero-fade {
+    animation: fadeup 600ms ease-out both;
+  }
+  /* Image reveal: clip-path opens from the bottom, media settles 1.08 → 1 */
+  .img-reveal {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .img-reveal.is-in {
+    clip-path: inset(0 0 0 0);
+  }
+  .img-reveal .reveal-media {
+    transform: scale(1.08);
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .img-reveal.is-in .reveal-media {
+    transform: scale(1);
+  }
+  /* Thin vertical scroll indicator with a brass dash travelling down */
+  .scroll-line {
+    width: 1px;
+    height: 44px;
+    background: rgba(246, 240, 231, 0.25);
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+  }
+  .scroll-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 50%;
+    background: var(--brass);
+    animation: scrolldash 2.2s ease-in-out infinite;
+  }
+  @keyframes scrolldash {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(220%); }
+  }
+  /* Hairline brass frame offset 14px behind an image */
+  .frame-offset {
+    position: relative;
+    isolation: isolate;
+  }
+  .frame-offset::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translate(14px, 14px);
+    border: 1px solid rgba(184, 138, 74, 0.45);
+    pointer-events: none;
+    z-index: -1;
+  }
+  /* Service rows: fill rises from the left in brass-tinted espresso */
+  .service-row {
+    position: relative;
+    isolation: isolate;
+  }
+  .service-row::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(184, 138, 74, 0.14) 0%, rgba(184, 138, 74, 0.04) 55%, transparent 100%), #241a12;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms ease;
+    z-index: -1;
+  }
+  .service-row:hover::before {
+    transform: scaleX(1);
+  }
+  .service-row:hover .numeral-outline {
+    color: var(--brass);
   }
   /* Soft readability shadow for serif text over photos — barely there */
   .hero-shadow {
@@ -384,10 +534,10 @@
   /* Ken Burns: barely-perceptible slow zoom on full-bleed photos */
   @keyframes kenburns {
     from { transform: scale(1); }
-    to { transform: scale(1.08); }
+    to { transform: scale(1.06); }
   }
   .kenburns {
-    animation: kenburns 26s ease-in-out infinite alternate;
+    animation: kenburns 20s ease-in-out infinite alternate;
     will-change: transform;
   }
   /* Soft fade-up when a new page mounts (page transition) */
@@ -441,7 +591,27 @@
   .kenburns,
   .page-enter,
   .fade-in,
-  .marquee-track {
+  .marquee-track,
+  .hero-line,
+  .hero-fade {
     animation: none;
+  }
+  .hero-line,
+  .hero-fade,
+  .reveal-inner {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .scroll-line::after {
+    animation: none;
+  }
+  .img-reveal {
+    clip-path: none;
+    transition: none;
+  }
+  .img-reveal .reveal-media {
+    transform: none;
+    transition: none;
   }
 }

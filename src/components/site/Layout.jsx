@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
+import Curtain from "./Curtain";
 import Header from "./Header";
 import Footer from "./Footer";
 import EnquireModal from "./EnquireModal";
@@ -16,7 +17,10 @@ export default function Layout() {
       >
         Skip to content
       </a>
+      <Curtain />
       <Header />
+      {/* Film grain over the whole site — decorative only */}
+      <div className="grain-overlay" aria-hidden="true" />
       <main id="main" key={pathname} className="page-enter">
         <Outlet />
       </main>

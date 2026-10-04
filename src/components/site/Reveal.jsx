@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Tiny IntersectionObserver-based reveal. Adds a small upward fade
- * (max 12px) when the element enters the viewport. Respects
- * prefers-reduced-motion via CSS.
+ * Single scroll-reveal system: text slides up from behind an overflow
+ * mask (600ms), once. Respects prefers-reduced-motion via CSS.
  */
 export default function Reveal({ children, as: Tag = "div", className = "", delay = 0, ...rest }) {
   const ref = useRef(null);
@@ -36,10 +35,11 @@ export default function Reveal({ children, as: Tag = "div", className = "", dela
     <Tag
       ref={ref}
       className={`reveal ${visible ? "is-visible" : ""} ${className}`}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
       {...rest}
     >
-      {children}
+      <div className="reveal-inner" style={delay ? { transitionDelay: `${delay}ms` } : undefined}>
+        {children}
+      </div>
     </Tag>
   );
 }
